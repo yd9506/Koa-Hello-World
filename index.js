@@ -6,6 +6,10 @@ const app = new Koa();
 app.use(koaBody());
 const TAB = '  ';
 
+const sleep = (ms) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 /**
  * Logger
  */
@@ -14,6 +18,9 @@ app.use(async (ctx, next) => {
   const rt = ctx.response.get('X-Response-Time');
 
   console.log(`${ctx.method} ${ctx.url} - ${rt}`);
+  if (ctx.request.header) {
+    console.log(`${TAB}Header ${JSON.stringify(ctx.request.header)}`);
+  }
   if (ctx.request.body) {
     console.log(`${TAB}Body ${JSON.stringify(ctx.request.body)}`);
   }
@@ -30,8 +37,13 @@ app.use(async (ctx, next) => {
 });
 
 app.use(async (ctx) => {
-  ctx.body = 'Hello World';
+//  await sleep(10000);
+  ctx.body = {
+    status: 'ok',
+    active: true,
+    activatedAt: '2024-12-20 13:00:00.459647'
+  };
 });
 
-const PORT = 3000;
+const PORT = 48090;
 app.listen(PORT, () => console.log(`Listening port ${PORT}`));
